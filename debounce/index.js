@@ -1,18 +1,22 @@
-/**
- * 防抖，非常频繁的事件，合并成一次去计算，在指定的时间内执行一次，若周期内重新触发，重新计算
- */
-function debounce(fn, wait = 50) {
-    let clear = true
+function debounce(func, wait) {
     let timer;
-    return function () {
-        if (clear) {
-            fn()
-            clear = false
-        } else {
-            window.clearTimeout(timer)
-        }
-        timer = window.setTimeout(() => {
-            clear = true
+    return function (...args) {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(() => {
+            func.apply(this, args)
         }, wait)
     }
 }
+
+let fn = debounce(() => {
+    console.log('run')
+}, 1000)
+
+t = setInterval(() => {
+    console.log('tick')
+    fn()
+}, 10)
+setTimeout(() => {
+    console.log('stop')
+    clearInterval(t)
+}, 2000)
